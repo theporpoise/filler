@@ -6,13 +6,13 @@
 #    By: mgould <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/12 11:00:36 by mgould            #+#    #+#              #
-#    Updated: 2017/02/09 11:50:30 by mgould           ###   ########.fr        #
+#    Updated: 2017/02/09 19:49:48 by mgould           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = resources/players/matt_filler
+NAME = a.out #resources/players/matt_filler
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -I $(LIBRARY)
 
 OBJCS = main.o
 
@@ -26,7 +26,7 @@ $(NAME): $(OBJCS) $(LIBFT)
 	gcc $(CFLAGS) -o $@ $^
 
 $(LIBFT):
-	cd $(LIBRARY) && make
+	cd $(LIBRARY) && $(MAKE)
 
 clean:
 	rm -f $(OBJCS)
