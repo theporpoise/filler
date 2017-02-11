@@ -11,6 +11,8 @@ typedef struct	s_game
 	int		map_x;
 	int		map_y;
 	char	**map;
+	int		p_x;
+	int		p_y;
 	char	**piece;
 }				t_game;
 
@@ -26,6 +28,17 @@ void	printmap(char **map)
 	}
 }
 
+void	printpiece(char **map)
+{
+	int i;
+
+	i = 0;
+	while (map[i])
+	{
+		fprintf(stderr, "%s", map[i]);
+		i++;
+	}
+}
 void	debug_game(t_game *game)
 {
 
@@ -33,7 +46,10 @@ void	debug_game(t_game *game)
 		fprintf(stderr, "ox    :%c\n", game->ox);
 		fprintf(stderr, "map_x :%d\n", game->map_x);
 		fprintf(stderr, "map_y :%d\n", game->map_y);
+		fprintf(stderr, "p_x   :%d\n", game->p_x);
+		fprintf(stderr, "p_y   :%d\n", game->p_y);
 		printmap(game->map);
+		printpiece(game->piece);
 }
 
 void	parse(t_game *game, char *line)
@@ -59,7 +75,8 @@ void	parse(t_game *game, char *line)
 		game->map = (char **)malloc(sizeof(char *) * (game->map_x + 1));
 		while (i < game->map_x)
 		{
-			game->map[i] = (char *)ft_memalloc(game->map_y + 1);
+			game->map[i] = (char *)ft_memalloc(game->map_y + 2);
+			game->map[i][game->map_y + 1] = '\0';
 			game->map[i] = (char*)ft_memset(game->map[i], '.', game->map_y);
 			i++;
 		}
@@ -73,7 +90,20 @@ void	parse(t_game *game, char *line)
 	else if (!(strncmp("Piece", line, 5)))
 	{
 		count = 0;
-		debug_game(game);
+		game->p_x = ft_atoi(line + 6);
+		game->p_y = ft_atoi(line + 6 + ft_strlen(ft_itoa(game->p_x)));
+		game->piece = (char **)malloc(sizeof(char *) * (game->p_x + 1));
+		game->piece[game->p_x] = NULL;
+	}
+	else if ((*line == '*' || *line == '.'))// && count < game->p_x)
+	{
+		fprintf(stderr, "count  :%d\n", count);
+		ft_putstr_fd(line, 2);
+		game->piece[count] = ft_strdup(line);
+		//game->piece[count] = ft_strcpy(game->piece[count], line);
+		count++;
+		if (count == game->p_x)
+			debug_game(game);
 	}
 }
 
@@ -85,8 +115,6 @@ int main(void)
 	while (get_next_line(0, &line))
 	{
 		parse(&game, line);
-
+		//ft_putstr_fd("loopy\n", 2);
 	}
-
-
 }
