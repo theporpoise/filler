@@ -1,6 +1,5 @@
 #include <libft.h>
 #include <filler.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 
@@ -53,6 +52,7 @@ static void	get_piece_size(t_game *game, char *line, int *count)
 	while (i < game->p_x)
 	{
 		game->piece[i] = (char *)ft_memalloc(game->p_y + 2);
+		ft_bzero(game->piece[i], game->p_y + 2);
 		i++;
 	}
 }
@@ -73,10 +73,8 @@ int		parse(t_game *game, char *line)
 		get_player_and_piece(game, line);
 	else if (!(strncmp("Plateau", line, 7)) && game->map == NULL)
 		map_size_and_map(game, line);
-	else if (ft_isdigit(*line))
-	{
+	else if (ft_isdigit(*line)) // && ft_isdigit(*(line + 1)))
 		copy_map(game, line, &count);
-	}
 	else if (!(strncmp("Piece", line, 5)))
 		get_piece_size(game, line, &count);
 	else if ((*line == '*' || *line == '.'))
@@ -92,6 +90,3 @@ int		parse(t_game *game, char *line)
 	}
 	return (0);
 }
-
-
-

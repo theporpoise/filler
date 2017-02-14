@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/09 16:36:16 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/13 16:42:06 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/13 20:22:10 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct		s_game
 	int				p_x;
 	int				p_y;
 	char			**piece;
+	int				**territory;
 }					t_game;
 
 int					parse(t_game *game, char *line);

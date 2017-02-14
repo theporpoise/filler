@@ -13,7 +13,57 @@ void	game_init(t_game *game)
 	game->p_x = -1;
 	game->p_y = -1;
 	game->piece = NULL;
+	game->territory = NULL;
 }
+
+
+int	**territory(t_game *game)
+{
+	int **area;
+	int i;
+	int j;
+
+	i = 0;
+	area = ft_memalloc(sizeof(int *) * (game->map_x + 1));
+	area[game->map_x] = NULL;
+	while (i < game->map_x)
+	{
+		area[i] = ft_memalloc(sizeof(int) * (game->map_y + 1));
+		j = 0;
+		while (j < game->map_y)
+		{
+			if (game->map[i][j] == game->ox || game->map[i][j] == (game->ox - ('a' - 'A')))
+				area[i][j] = 1;
+			else if (game->map[i][j] != 0)
+				area[i][j] = 2;
+			else
+				area[i][j] = 0;
+			j++;
+		}
+		i++;
+	}
+	return (area);
+}
+
+//split out creation function for ints and then population function?
+//only dups once, but otherwise it's good.
+
+/*
+void	is_safe(t_game *game)
+{
+	;
+}
+*/
+
+void	placement(t_game *game)
+{
+
+	game->territory = territory(game);
+
+}
+
+
+
 
 int main(void)
 {
@@ -25,6 +75,7 @@ int main(void)
 	{
 		if (parse(&game, line))
 		{
+			placement(&game);
 			debug_game(&game);
 		}
 	}
