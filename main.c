@@ -16,7 +16,8 @@ void	game_init(t_game *game)
 	game->territory = NULL;
 }
 
-
+// probably can just use current map, and lookup on the char array :-)
+// and use toupper and tolower to check :-)
 int	**territory(t_game *game)
 {
 	int **area;
