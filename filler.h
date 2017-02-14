@@ -6,18 +6,32 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/09 16:36:16 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/09 17:19:06 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/13 16:42:06 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FILLER_H
 # define FILLER_H
+# include <stdlib.h>
+# include <stdio.h>
 
-typedef struct		s_piece
+typedef struct		s_game
 {
-	int				w;
-	int				h;
-	int				p;
-}					t_piece;
+	int				player;
+	char			ox;
+	int				map_x;
+	int				map_y;
+	char			**map;
+	int				p_x;
+	int				p_y;
+	char			**piece;
+}					t_game;
+
+int					parse(t_game *game, char *line);
+
+// debug functions
+void	debug_printmap(char **map, FILE *fp);
+void	debug_printpiece(char **map, FILE *fp);
+void	debug_game(t_game *game);
 
 #endif

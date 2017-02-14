@@ -6,15 +6,15 @@
 #    By: mgould <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/12 11:00:36 by mgould            #+#    #+#              #
-#    Updated: 2017/02/10 12:23:52 by mgould           ###   ########.fr        #
+#    Updated: 2017/02/13 13:12:12 by mgould           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = resources/players/matt_filler
 
-CFLAGS = -Wall -Wextra -Werror -I $(LIBRARY)
+CFLAGS = -Wall -Wextra -Werror -I $(LIBRARY) -I .
 
-OBJCS = main.o
+OBJCS = main.o debug.o parse.o
 
 LIBFT = /nfs/2016/m/mgould/thelibrary/libft.a
 
