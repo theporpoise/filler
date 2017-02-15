@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/09 16:36:16 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/14 15:58:24 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/15 08:15:50 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct		s_game
 	int				p_x;
 	int				p_y;
 	char			**piece;
-	t_point			*terr;
+	t_point			*safelist;
 	int				*spot;
 }					t_game;
 

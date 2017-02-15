@@ -19,7 +19,7 @@ void	game_init(t_game *game)
 	game->p_x = -1;
 	game->p_y = -1;
 	game->piece = NULL;
-	game->terr = NULL;
+	game->safelist = NULL;
 	game->spot = spot;
 }
 
@@ -35,30 +35,6 @@ void	pointinit(t_point **point_pointer, int x, int y)
 	*point_pointer = point;
 }
 
-/*
-NO LONGER NEEDED . . .
-void	startposition(t_game *game)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (game->map[i])
-	{
-		j = 0;
-		while (game->map[i][j])
-		{
-			if (ft_tolower(game->map[i][j]) == game->ox)
-			{
-				pointinit(&(game->terr), i, j);
-				return ;
-			}
-			j++;
-		}
-		i++;
-	}
-}
-*/
 int notinbounds(t_game *game, t_point *point)
 {
 	if (game->map_x <= (point->x + game->spot[0]))
@@ -67,18 +43,6 @@ int notinbounds(t_game *game, t_point *point)
 		return (1);
 	return (0);
 }
-//step 1
-//update so checks only 1 spot
-//check all positions (including negative shifted positiohns)
-//checks the whole malp
-//creates a list of points
-//step 2
-//creeate simple map weight, reads map and updates chars to #
-//step 3
-//calculate value at each placement.  if update is post point check, then
-//no need to modify point check
-//step 4
-//place highest value piece
 
 int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
 {
@@ -91,55 +55,38 @@ int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
 		game->spot[1] = 0;
 		while (piece[game->spot[0]][game->spot[1]] && overlap < 2)
 		{
-			//need more else if's.  what is piece is '.'?
-			//currently not triggering anything.
 			if (notinbounds(game, point))
 			{
-				//fprintf(stderr, "YOU GOT IN THE notinbounds\n");
 				overlap += 2;
 			}
 			else if (piece[game->spot[0]][game->spot[1]] == '.')
-				fprintf(stderr, "");
+				;
 			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
 				game->spot[1]]) == game->ox  && \
 				piece[game->spot[0]][game->spot[1]] == '*')
 			{
-				fprintf(stderr, "YOU GOT IN THE MATCH\n");
 				overlap++;
 			}
 			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
 				game->spot[1]]) != '.')
 			{
-				fprintf(stderr, "YOU GOT IN THE opponent match\n");
-				fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
-				fprintf(stderr, "spotx: %d, spoty: %d\n", game->spot[0], game->spot[1]);
 				overlap += 2;
 			}
 			game->spot[1]++;
 		}
-		//fprintf(stderr, "overlap: %d\n", overlap);
 		game->spot[0]++;
 	}
-	if (overlap == 1)
-	{
-		fprintf(stderr, "YOU GOT IN THE RETURN\n");
-		fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
-		game->spot[0] = point->x;
-		game->spot[1] = point->y;
-		return (1);
-	}
-
-	return (0);
+	return (overlap);
 }
 
-//safelist function
-t_point	*getsafelist(t_game *game)
+//suggest starting here and cleaning this fucntion up.
+
+t_point	*getsafelist(t_game *game, t_point *begin)
 {
 	int		i;
 	int		j;
 	t_point *start;
 	t_point	*next;
-	t_point	*begin;
 
 	start = NULL;
 	next = NULL;
@@ -152,7 +99,7 @@ t_point	*getsafelist(t_game *game)
 		while (j < game->map_y)
 		{
 			pointinit(&next, i, j);
-			if (is_safe_point(game->map, game->piece, next, game))
+			if (is_safe_point(game->map, game->piece, next, game) == 1)
 			{
 				start->next = next;
 				start = start->next;
@@ -174,23 +121,10 @@ t_point	*getsafelist(t_game *game)
 
 void	placement(t_game *game)
 {
-	t_point *start;
+	t_point *begin;
 
-	start = getsafelist(game);
-
-	game->terr = start;
-	/*
-	while (start)
-	{
-		if ((is_safe_point(game->map, game->piece, start, game)))
-		{
-			ft_printf("%d %d\n", game->spot[0], game->spot[1]);
-			break;
-		}
-		start = (start)->next;
-	}
-	*/
-
+	begin = NULL;
+	game->safelist = getsafelist(game, begin);
 }
 
 int main(void)
@@ -209,8 +143,16 @@ int main(void)
 	}
 }
 
-/*
 
+
+/*
+//step 2
+//creeate simple map weight, reads map and updates chars to #
+//step 3
+//calculate value at each placement.  if update is post point check, then
+//no need to modify point check
+//step 4
+//place highest value piece
 //fprintf(stderr, "you got here");
 //ft_putstr_fd("loopy\n", 2);
 // is safe?
@@ -220,10 +162,15 @@ int main(void)
 //print_move
 //
 //
+
+fprintf(stderr, "YOU GOT IN THE opponent match\n");
+				fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
+				fprintf(stderr, "spotx: %d, spoty: %d\n", game->spot[0], game->spot[1]);
+
+
+
+fprintf(stderr, "YOU GOT IN THE RETURN\n");
+		fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
+
+
 */
-
-
-
-
-
-
