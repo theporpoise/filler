@@ -35,6 +35,8 @@ void	pointinit(t_point **point_pointer, int x, int y)
 	*point_pointer = point;
 }
 
+/*
+NO LONGER NEEDED . . .
 void	startposition(t_game *game)
 {
 	int i;
@@ -56,12 +58,12 @@ void	startposition(t_game *game)
 		i++;
 	}
 }
-
+*/
 int notinbounds(t_game *game, t_point *point)
 {
-	if (game->map_x < (point->x + game->spot[0]))
+	if (game->map_x <= (point->x + game->spot[0]))
 		return (1);
-	else if (game->map_y < (point->y + game->spot[1]))
+	else if (game->map_y <= (point->y + game->spot[1]))
 		return (1);
 	return (0);
 }
@@ -93,11 +95,11 @@ int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
 			//currently not triggering anything.
 			if (notinbounds(game, point))
 			{
-				fprintf(stderr, "YOU GOT IN THE notinbounds\n");
+				//fprintf(stderr, "YOU GOT IN THE notinbounds\n");
 				overlap += 2;
 			}
 			else if (piece[game->spot[0]][game->spot[1]] == '.')
-				fprintf(stderr, "YOU GOT IN THE . spot for piece\n");
+				fprintf(stderr, "");
 			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
 				game->spot[1]]) == game->ox  && \
 				piece[game->spot[0]][game->spot[1]] == '*')
@@ -110,17 +112,18 @@ int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
 			{
 				fprintf(stderr, "YOU GOT IN THE opponent match\n");
 				fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
-				fprintf(stderr, "spotx: %d, spoty: %d", game->spot[0], game->spot[1]);
+				fprintf(stderr, "spotx: %d, spoty: %d\n", game->spot[0], game->spot[1]);
 				overlap += 2;
 			}
 			game->spot[1]++;
 		}
-		fprintf(stderr, "overlap: %d\n", overlap);
+		//fprintf(stderr, "overlap: %d\n", overlap);
 		game->spot[0]++;
 	}
 	if (overlap == 1)
 	{
 		fprintf(stderr, "YOU GOT IN THE RETURN\n");
+		fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
 		game->spot[0] = point->x;
 		game->spot[1] = point->y;
 		return (1);
@@ -130,14 +133,53 @@ int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
 }
 
 //safelist function
+t_point	*getsafelist(t_game *game)
+{
+	int		i;
+	int		j;
+	t_point *start;
+	t_point	*next;
+	t_point	*begin;
+
+	start = NULL;
+	next = NULL;
+	pointinit(&start, -1, -1);
+	begin = start;
+	i = 0;
+	while (i < game->map_x)
+	{
+		j = 0;
+		while (j < game->map_y)
+		{
+			pointinit(&next, i, j);
+			if (is_safe_point(game->map, game->piece, next, game))
+			{
+				start->next = next;
+				start = start->next;
+			}
+			else
+				free(next);
+			j++;
+		}
+		i++;
+	}
+	if (begin->x == -1 && begin->next)
+	{
+		next = begin;
+		begin = begin->next;
+		free(next);
+	}
+	return (begin);
+}
 
 void	placement(t_game *game)
 {
 	t_point *start;
 
-	if ((game->terr) == NULL)
-		startposition(game);
-	start = game->terr;
+	start = getsafelist(game);
+
+	game->terr = start;
+	/*
 	while (start)
 	{
 		if ((is_safe_point(game->map, game->piece, start, game)))
@@ -147,7 +189,7 @@ void	placement(t_game *game)
 		}
 		start = (start)->next;
 	}
-
+	*/
 
 }
 
