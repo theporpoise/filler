@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/09 16:36:16 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/13 20:22:10 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/14 15:58:24 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 # define FILLER_H
 # include <stdlib.h>
 # include <stdio.h>
+
+typedef struct		s_point
+{
+	int				x;
+	int				y;
+	struct s_point	*next;
+}					t_point;
 
 typedef struct		s_game
 {
@@ -25,8 +32,11 @@ typedef struct		s_game
 	int				p_x;
 	int				p_y;
 	char			**piece;
-	int				**territory;
+	t_point			*terr;
+	int				*spot;
 }					t_game;
+
+
 
 int					parse(t_game *game, char *line);
 

@@ -5,6 +5,12 @@
 
 void	game_init(t_game *game)
 {
+	int *spot;
+
+	spot = (int *)malloc(sizeof(int) * 2);
+	spot[0] = 0;
+	spot[1] = 0;
+
 	game->player = -1;
 	game->ox = 'Z';
 	game->map_x = -1;
@@ -13,58 +19,137 @@ void	game_init(t_game *game)
 	game->p_x = -1;
 	game->p_y = -1;
 	game->piece = NULL;
-	game->territory = NULL;
+	game->terr = NULL;
+	game->spot = spot;
 }
 
-// probably can just use current map, and lookup on the char array :-)
-// and use toupper and tolower to check :-)
-int	**territory(t_game *game)
+void	pointinit(t_point **point_pointer, int x, int y)
 {
-	int **area;
+	t_point	*point;
+
+	point = (t_point *)malloc(sizeof(t_point));
+	point->x = x;
+	point->y = y;
+	point->next = NULL;
+
+	*point_pointer = point;
+}
+
+void	startposition(t_game *game)
+{
 	int i;
 	int j;
 
 	i = 0;
-	area = ft_memalloc(sizeof(int *) * (game->map_x + 1));
-	area[game->map_x] = NULL;
-	while (i < game->map_x)
+	while (game->map[i])
 	{
-		area[i] = ft_memalloc(sizeof(int) * (game->map_y + 1));
 		j = 0;
-		while (j < game->map_y)
+		while (game->map[i][j])
 		{
-			if (game->map[i][j] == game->ox || game->map[i][j] == (game->ox - ('a' - 'A')))
-				area[i][j] = 1;
-			else if (game->map[i][j] != 0)
-				area[i][j] = 2;
-			else
-				area[i][j] = 0;
+			if (ft_tolower(game->map[i][j]) == game->ox)
+			{
+				pointinit(&(game->terr), i, j);
+				return ;
+			}
 			j++;
 		}
 		i++;
 	}
-	return (area);
 }
 
-//split out creation function for ints and then population function?
-//only dups once, but otherwise it's good.
-
-/*
-void	is_safe(t_game *game)
+int notinbounds(t_game *game, t_point *point)
 {
-	;
+	if (game->map_x < (point->x + game->spot[0]))
+		return (1);
+	else if (game->map_y < (point->y + game->spot[1]))
+		return (1);
+	return (0);
 }
-*/
+//step 1
+//update so checks only 1 spot
+//check all positions (including negative shifted positiohns)
+//checks the whole malp
+//creates a list of points
+//step 2
+//creeate simple map weight, reads map and updates chars to #
+//step 3
+//calculate value at each placement.  if update is post point check, then
+//no need to modify point check
+//step 4
+//place highest value piece
+
+int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
+{
+	int overlap;
+
+	overlap = 0;
+	game->spot[0] = 0;
+	while (piece[game->spot[0]])
+	{
+		game->spot[1] = 0;
+		while (piece[game->spot[0]][game->spot[1]] && overlap < 2)
+		{
+			//need more else if's.  what is piece is '.'?
+			//currently not triggering anything.
+			if (notinbounds(game, point))
+			{
+				fprintf(stderr, "YOU GOT IN THE notinbounds\n");
+				overlap += 2;
+			}
+			else if (piece[game->spot[0]][game->spot[1]] == '.')
+				fprintf(stderr, "YOU GOT IN THE . spot for piece\n");
+			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
+				game->spot[1]]) == game->ox  && \
+				piece[game->spot[0]][game->spot[1]] == '*')
+			{
+				fprintf(stderr, "YOU GOT IN THE MATCH\n");
+				overlap++;
+			}
+			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
+				game->spot[1]]) != '.')
+			{
+				fprintf(stderr, "YOU GOT IN THE opponent match\n");
+				fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
+				fprintf(stderr, "spotx: %d, spoty: %d", game->spot[0], game->spot[1]);
+				overlap += 2;
+			}
+			game->spot[1]++;
+		}
+		fprintf(stderr, "overlap: %d\n", overlap);
+		game->spot[0]++;
+	}
+	if (overlap == 1)
+	{
+		fprintf(stderr, "YOU GOT IN THE RETURN\n");
+		game->spot[0] = point->x;
+		game->spot[1] = point->y;
+		return (1);
+	}
+
+	return (0);
+}
+
+//safelist function
 
 void	placement(t_game *game)
 {
+	t_point *start;
 
-	game->territory = territory(game);
+	if ((game->terr) == NULL)
+		startposition(game);
+	start = game->terr;
+	while (start)
+	{
+		if ((is_safe_point(game->map, game->piece, start, game)))
+		{
+			ft_printf("%d %d\n", game->spot[0], game->spot[1]);
+			break;
+		}
+		start = (start)->next;
+	}
+
 
 }
-
-
-
 
 int main(void)
 {
@@ -80,22 +165,20 @@ int main(void)
 			debug_game(&game);
 		}
 	}
-	//ft_putstr_fd("loopy\n", 2);
-	// is safe?
-	// -all places where you can place a piece
-	// return top placement
-	// -rank placement
-	//print_move
-
-
 }
 
+/*
 
-
-
-
-
-
+//fprintf(stderr, "you got here");
+//ft_putstr_fd("loopy\n", 2);
+// is safe?
+// -all places where you can place a piece
+// return top placement
+// -rank placement
+//print_move
+//
+//
+*/
 
 
 

@@ -2,7 +2,6 @@
 #include <filler.h>
 #include <stdlib.h>
 
-
 static void	get_player_and_piece(t_game *game, char *line)
 {
 	game->player = line[10] - '0';
@@ -23,7 +22,7 @@ static void	map_size_and_map(t_game *game, char *line)
 	game->map[game->map_x] = NULL;
 	while (i < game->map_x)
 	{
-		game->map[i] = (char *)ft_memalloc(game->map_y + 2);
+		game->map[i] = (char *)ft_memalloc(game->map_y);
 		i++;
 	}
 }
@@ -44,15 +43,15 @@ static void	get_piece_size(t_game *game, char *line, int *count)
 			ft_strdel(&(game->piece[i]));
 			i++;
 		}
-		free(game->piece);
+		//free(game->piece);
 	}
 	i = 0;
 	game->piece = (char **)malloc(sizeof(char *) * (game->p_x + 1));
 	game->piece[game->p_x] = NULL;
 	while (i < game->p_x)
 	{
-		game->piece[i] = (char *)ft_memalloc(game->p_y + 2);
-		ft_bzero(game->piece[i], game->p_y + 2);
+		game->piece[i] = (char *)ft_memalloc(game->p_y + 1);
+		ft_bzero(game->piece[i], game->p_y + 1);
 		i++;
 	}
 }
@@ -60,8 +59,7 @@ static void	get_piece_size(t_game *game, char *line, int *count)
 static void	copy_map(t_game *game, char *line, int *count)
 {
 	ft_strcpy(game->map[*count], (line + 4));
-	game->map[*count][game->map_y] = '\n';
-	game->map[*count][game->map_y + 1] = '\0';
+	game->map[*count][game->map_y] = '\0';
 	*count += 1;
 }
 
@@ -80,7 +78,6 @@ int		parse(t_game *game, char *line)
 	else if ((*line == '*' || *line == '.'))
 	{
 		game->piece[count] = ft_strdup(line);
-		game->piece[count][game->p_y] = '\n';
 		count++;
 		if (count == game->p_x)
 		{
