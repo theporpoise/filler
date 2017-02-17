@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:49:49 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/16 19:25:28 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/17 08:41:55 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ t_point	*pointinit(int x, int y)
 	point = (t_point *)malloc(sizeof(t_point));
 	point->x = x;
 	point->y = y;
+	point->score = 0;
 	point->next = NULL;
 	return (point);
 }

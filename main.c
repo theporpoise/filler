@@ -2,60 +2,28 @@
 #include <filler.h>
 #include <stdio.h>
 #include <stdlib.h>
+// include unistd for sleeping
+#include <unistd.h>
 
-void	startposition(t_game *game)
-{
-	game->spot[0] = 0;
-	while (game->map[game->spot[0]])
-	{
-		game->spot[1] = 0;
-		while (game->map[game->spot[0]][game->spot[1]])
-		{
-			if (game->map[game->spot[0]][game->spot[1]] == '.')
-				;
-			else if (game->map[game->spot[0]][game->spot[1]] == \
-					ft_toupper(game->ox))
-			{
-				game->start[0] = game->spot[0];
-				game->start[1] = game->spot[1];
-			}
-			else
-			{
-				game->start[2] = game->spot[0];
-				game->start[3] = game->spot[1];
-			}
-			game->spot[1] += 1;
-		}
-		game->spot[0] += 1;
-	}
-}
 
 static int	inbounds(t_game *game, int i, int j)
 {
 
 	if (i < 0 || j >= game->map_y || i >= game->map_x || j < 0)
 	{
-		//fprintf(stderr, "YOU are out of bounds\n");
 		return (0);
 	}
 	if (game->map[i][j] == ft_toupper(game->oox) || game->map[i][j] == game->oox)
 	{
-		//fprintf(stderr, "YOU GOT IN matches oppoennt\n");
 		return (0);
 	}
-	if (!ft_isdigit(game->map[i][j]))
+	if (game->map[i][j] == '.')
 	{
-		//fprintf(stderr, "IS not a digit DIGIT\n");
 		game->map[i][j] = '0';
 	}
 
 	return (1);
 }
-
-/*
-instead of using this i can run through whole map and set pieces next to a 3
-and equal to zero to equal a 2. can do the same for 2 and 3 :-).
-*/
 
 char	affectsetter(int a)
 {
@@ -66,8 +34,6 @@ char	affectsetter(int a)
 		ret += 2;
 	else if (a == 5)
 		ret += 1;
-	else if (a == 6)
-		ret = '1';
 	else
 		ret += a;
 	return (ret);
@@ -101,7 +67,7 @@ void	aroundpoint2(t_game *game, int i, int j, int a)
 	char	m;
 
 	affect = affectsetter(a);
-	m = '0' + a - 1;
+	m = affectsetter(a - 1);
 	if (inbounds(game, (i - 1), j) && game->map[i - 1][j] == m)
 		game->map[i][j] = affect;
 	else if (inbounds(game, (i + 1), j) && game->map[i + 1][j] == m)
@@ -118,7 +84,7 @@ void	aroundpoint2(t_game *game, int i, int j, int a)
 		game->map[i][j] = affect;
 	else if (inbounds(game, (i - 1), (j + 1)) && game->map[i - 1][j + 1] == m)
 		game->map[i][j] = affect;
-	}
+}
 
 
 void	aoe1(t_game *game, int a)
@@ -134,7 +100,7 @@ void	aoe1(t_game *game, int a)
 		j = 0;
 		while (game->map[i][j])
 		{
-			if (game->map[i][j] == '.' || game->map[i][j] == ft_toupper(game->ox))
+			if (game->map[i][j] == '.')
 				game->map[i][j] = '0';
 			else if (game->map[i][j] == ft_toupper(game->oox))
 				aroundpoint1(game, i, j, affect);
@@ -165,28 +131,81 @@ void	aoe2(t_game *game, int a)
 
 }
 
-
 void	mapvalue(t_game *game)
 {
-
 	aoe1(game, 1);
 	aoe2(game, 2);
 	aoe2(game, 3);
 	aoe2(game, 4);
 	aoe2(game, 5);
-// this is broke as fuck b/c the numbers are counting down aoe2(game, 6);
+}
 
+
+int		pointvalue(t_game game, t_point *point)
+{
+	int	value;
+	int	i;
+	int	j;
+
+	value = 0;
+	i = -1;
+	if (point->x == -1)
+		return (-1);
+	while (game.piece[++i])
+	{
+		j = -1;
+		while (game.piece[i][++j])
+		{
+			if (inbounds(&game, (point->x + i), (point->y + j)) && \
+				ft_isdigit(game.map[point->x + i][point->y + j]))
+				value += (game.map[point->x + i][point->y + j]) - '0';
+		}
+	}
+	return (value);
+}
+
+
+t_point	*pickpiece(t_game game)
+{
+	t_point *pickpiece;
+	t_point *ret;
+	int		gv;
+	int		tmp;
+
+	gv = -1;
+	tmp = 0;
+	ret = NULL;
+	pickpiece = game.safelist;
+
+	while (pickpiece)
+	{
+		tmp = pointvalue(game, pickpiece);
+		pickpiece->score = tmp;
+		if (tmp > gv)
+		{
+			gv = tmp;
+			ret = pickpiece;
+		}
+		pickpiece = pickpiece->next;
+	}
+	return (ret);
 }
 
 void	placement(t_game *game)
 {
-	static int	i;
+	t_point *placement;
 
-	i++;
-	if (i == 1)
-		startposition(game);
+	placement = NULL;
 	getsafelist(game, &(game->safelist));
 	mapvalue(game);
+	placement = pickpiece(*game);
+	//fprintf(stderr, "Piece Pacement, %d, %d", placement->x, placement->y);
+	//sleep(1);
+	//ft_putnbr(placement->x);
+	//ft_putchar(' ');
+	//ft_putnbr(placement->y);
+	//ft_putchar('\n');
+	ft_printf("%d %d\n", placement->x, placement->y);
 
 }
 
@@ -201,11 +220,8 @@ int main(void)
 		if (parse(&game, line))
 		{
 			placement(&game);
-			//create calculate value function
-			//go through list, calculate value, return highest value
-			//print out with ft_printf("%d %d\n", x, y);
-			//play it!
-			debug_game(&game);
+			//debug_game(&game);
+			//create a list delete function and map free function function
 		}
 	}
 }
@@ -241,3 +257,33 @@ fprintf(stderr, "YOU GOT IN THE RETURN\n");
 
 
 */
+
+/*
+void	startposition(t_game *game)
+{
+	game->spot[0] = 0;
+	while (game->map[game->spot[0]])
+	{
+		game->spot[1] = 0;
+		while (game->map[game->spot[0]][game->spot[1]])
+		{
+			if (game->map[game->spot[0]][game->spot[1]] == '.')
+				;
+			else if (game->map[game->spot[0]][game->spot[1]] == \
+					ft_toupper(game->ox))
+			{
+				game->start[0] = game->spot[0];
+				game->start[1] = game->spot[1];
+			}
+			else
+			{
+				game->start[2] = game->spot[0];
+				game->start[3] = game->spot[1];
+			}
+			game->spot[1] += 1;
+		}
+		game->spot[0] += 1;
+	}
+}
+*/
+
