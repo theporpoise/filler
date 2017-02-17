@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/09 16:36:16 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/15 08:15:50 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/16 19:25:40 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ typedef struct		s_point
 {
 	int				x;
 	int				y;
+	int				score;
 	struct s_point	*next;
 }					t_point;
 
@@ -26,6 +27,7 @@ typedef struct		s_game
 {
 	int				player;
 	char			ox;
+	char			oox;
 	int				map_x;
 	int				map_y;
 	char			**map;
@@ -34,11 +36,16 @@ typedef struct		s_game
 	char			**piece;
 	t_point			*safelist;
 	int				*spot;
+	int				*start;
 }					t_game;
 
 
 
 int					parse(t_game *game, char *line);
+void				getsafelist(t_game *game, t_point **begin);
+void				game_init(t_game *game);
+t_point				*pointinit(int x, int y);
+
 
 // debug functions
 void	debug_printmap(char **map, FILE *fp);

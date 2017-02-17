@@ -3,128 +3,191 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void	game_init(t_game *game)
+void	startposition(t_game *game)
 {
-	int *spot;
-
-	spot = (int *)malloc(sizeof(int) * 2);
-	spot[0] = 0;
-	spot[1] = 0;
-
-	game->player = -1;
-	game->ox = 'Z';
-	game->map_x = -1;
-	game->map_y = -1;
-	game->map = NULL;
-	game->p_x = -1;
-	game->p_y = -1;
-	game->piece = NULL;
-	game->safelist = NULL;
-	game->spot = spot;
-}
-
-void	pointinit(t_point **point_pointer, int x, int y)
-{
-	t_point	*point;
-
-	point = (t_point *)malloc(sizeof(t_point));
-	point->x = x;
-	point->y = y;
-	point->next = NULL;
-
-	*point_pointer = point;
-}
-
-int notinbounds(t_game *game, t_point *point)
-{
-	if (game->map_x <= (point->x + game->spot[0]))
-		return (1);
-	else if (game->map_y <= (point->y + game->spot[1]))
-		return (1);
-	return (0);
-}
-
-int	is_safe_point(char **map, char **piece, t_point *point, t_game *game)
-{
-	int overlap;
-
-	overlap = 0;
 	game->spot[0] = 0;
-	while (piece[game->spot[0]])
+	while (game->map[game->spot[0]])
 	{
 		game->spot[1] = 0;
-		while (piece[game->spot[0]][game->spot[1]] && overlap < 2)
+		while (game->map[game->spot[0]][game->spot[1]])
 		{
-			if (notinbounds(game, point))
-			{
-				overlap += 2;
-			}
-			else if (piece[game->spot[0]][game->spot[1]] == '.')
+			if (game->map[game->spot[0]][game->spot[1]] == '.')
 				;
-			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
-				game->spot[1]]) == game->ox  && \
-				piece[game->spot[0]][game->spot[1]] == '*')
+			else if (game->map[game->spot[0]][game->spot[1]] == \
+					ft_toupper(game->ox))
 			{
-				overlap++;
-			}
-			else if (ft_tolower(map[point->x + game->spot[0]][point->y + \
-				game->spot[1]]) != '.')
-			{
-				overlap += 2;
-			}
-			game->spot[1]++;
-		}
-		game->spot[0]++;
-	}
-	return (overlap);
-}
-
-//suggest starting here and cleaning this fucntion up.
-
-t_point	*getsafelist(t_game *game, t_point *begin)
-{
-	int		i;
-	int		j;
-	t_point *start;
-	t_point	*next;
-
-	start = NULL;
-	next = NULL;
-	pointinit(&start, -1, -1);
-	begin = start;
-	i = 0;
-	while (i < game->map_x)
-	{
-		j = 0;
-		while (j < game->map_y)
-		{
-			pointinit(&next, i, j);
-			if (is_safe_point(game->map, game->piece, next, game) == 1)
-			{
-				start->next = next;
-				start = start->next;
+				game->start[0] = game->spot[0];
+				game->start[1] = game->spot[1];
 			}
 			else
-				free(next);
+			{
+				game->start[2] = game->spot[0];
+				game->start[3] = game->spot[1];
+			}
+			game->spot[1] += 1;
+		}
+		game->spot[0] += 1;
+	}
+}
+
+static int	inbounds(t_game *game, int i, int j)
+{
+
+	if (i < 0 || j >= game->map_y || i >= game->map_x || j < 0)
+	{
+		//fprintf(stderr, "YOU are out of bounds\n");
+		return (0);
+	}
+	if (game->map[i][j] == ft_toupper(game->oox) || game->map[i][j] == game->oox)
+	{
+		//fprintf(stderr, "YOU GOT IN matches oppoennt\n");
+		return (0);
+	}
+	if (!ft_isdigit(game->map[i][j]))
+	{
+		//fprintf(stderr, "IS not a digit DIGIT\n");
+		game->map[i][j] = '0';
+	}
+
+	return (1);
+}
+
+/*
+instead of using this i can run through whole map and set pieces next to a 3
+and equal to zero to equal a 2. can do the same for 2 and 3 :-).
+*/
+
+char	affectsetter(int a)
+{
+	char	ret;
+
+	ret = '0';
+	if (a == 4)
+		ret += 2;
+	else if (a == 5)
+		ret += 1;
+	else if (a == 6)
+		ret = '1';
+	else
+		ret += a;
+	return (ret);
+}
+
+void	aroundpoint1(t_game *game, int i, int j, char affect)
+{
+
+	if (inbounds(game, (i - 1), j) && game->map[i - 1][j] == '0')
+		game->map[i - 1][j] = affect;
+	if (inbounds(game, (i + 1), j) && game->map[i + 1][j] == '0')
+		game->map[i + 1][j] = affect;
+	if (inbounds(game, (i), (j - 1)) && game->map[i][j -1 ] == '0')
+		game->map[i][j - 1] = affect;
+	if (inbounds(game, i, (j + 1)) && game->map[i][j + 1] == '0')
+		game->map[i][j + 1] = affect;
+	if (inbounds(game, (i + 1), (j + 1)) && game->map[i + 1][j + 1] == '0')
+		game->map[i + 1][j + 1] = affect;
+	if (inbounds(game, (i + 1), (j - 1)) && game->map[i + 1][j - 1] == '0')
+		game->map[i + 1][j - 1] = affect;
+	if (inbounds(game, (i - 1), (j - 1)) && game->map[i - 1][j - 1] == '0')
+		game->map[i - 1][j - 1] = affect;
+	if (inbounds(game, (i - 1), (j + 1)) && game->map[i - 1][j + 1] == '0')
+		game->map[i - 1][j + 1] = affect;
+
+}
+
+void	aroundpoint2(t_game *game, int i, int j, int a)
+{
+	char	affect;
+	char	m;
+
+	affect = affectsetter(a);
+	m = '0' + a - 1;
+	if (inbounds(game, (i - 1), j) && game->map[i - 1][j] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, (i + 1), j) && game->map[i + 1][j] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, (i), (j - 1)) && game->map[i][j -1 ] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, i, (j + 1)) && game->map[i][j + 1] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, (i + 1), (j + 1)) && game->map[i + 1][j + 1] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, (i + 1), (j - 1)) && game->map[i + 1][j - 1] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, (i - 1), (j - 1)) && game->map[i - 1][j - 1] == m)
+		game->map[i][j] = affect;
+	else if (inbounds(game, (i - 1), (j + 1)) && game->map[i - 1][j + 1] == m)
+		game->map[i][j] = affect;
+	}
+
+
+void	aoe1(t_game *game, int a)
+{
+	int i;
+	int j;
+	char affect;
+
+	affect = affectsetter(a);
+	i = 0;
+	while (game->map[i])
+	{
+		j = 0;
+		while (game->map[i][j])
+		{
+			if (game->map[i][j] == '.' || game->map[i][j] == ft_toupper(game->ox))
+				game->map[i][j] = '0';
+			else if (game->map[i][j] == ft_toupper(game->oox))
+				aroundpoint1(game, i, j, affect);
 			j++;
 		}
 		i++;
 	}
-	if (begin->x == -1 && begin->next)
+
+}
+
+void	aoe2(t_game *game, int a)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (game->map[i])
 	{
-		next = begin;
-		begin = begin->next;
-		free(next);
+		j = 0;
+		while (game->map[i][j])
+		{
+			if (game->map[i][j] == '0')
+				aroundpoint2(game, i, j, a);
+			j++;
+		}
+		i++;
 	}
-	return (begin);
+
+}
+
+
+void	mapvalue(t_game *game)
+{
+
+	aoe1(game, 1);
+	aoe2(game, 2);
+	aoe2(game, 3);
+	aoe2(game, 4);
+	aoe2(game, 5);
+// this is broke as fuck b/c the numbers are counting down aoe2(game, 6);
+
 }
 
 void	placement(t_game *game)
 {
-	t_point *begin;
+	static int	i;
 
-	begin = NULL;
-	game->safelist = getsafelist(game, begin);
+	i++;
+	if (i == 1)
+		startposition(game);
+	getsafelist(game, &(game->safelist));
+	mapvalue(game);
+
 }
 
 int main(void)
@@ -138,6 +201,10 @@ int main(void)
 		if (parse(&game, line))
 		{
 			placement(&game);
+			//create calculate value function
+			//go through list, calculate value, return highest value
+			//print out with ft_printf("%d %d\n", x, y);
+			//play it!
 			debug_game(&game);
 		}
 	}

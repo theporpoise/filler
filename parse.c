@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/02/16 17:07:31 by mgould            #+#    #+#             */
+/*   Updated: 2017/02/16 19:26:36 by mgould           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <libft.h>
 #include <filler.h>
 #include <stdlib.h>
@@ -6,9 +18,15 @@ static void	get_player_and_piece(t_game *game, char *line)
 {
 	game->player = line[10] - '0';
 	if (game->player == 1)
+	{
 		game->ox = 'o';
+		game->oox = 'x';
+	}
 	else
+	{
 		game->ox = 'x';
+		game->oox = 'o';
+	}
 }
 
 static void	map_size_and_map(t_game *game, char *line)
@@ -43,7 +61,6 @@ static void	get_piece_size(t_game *game, char *line, int *count)
 			ft_strdel(&(game->piece[i]));
 			i++;
 		}
-		//free(game->piece);
 	}
 	i = 0;
 	game->piece = (char **)malloc(sizeof(char *) * (game->p_x + 1));
@@ -63,7 +80,7 @@ static void	copy_map(t_game *game, char *line, int *count)
 	*count += 1;
 }
 
-int		parse(t_game *game, char *line)
+int			parse(t_game *game, char *line)
 {
 	static int	count;
 
@@ -71,7 +88,7 @@ int		parse(t_game *game, char *line)
 		get_player_and_piece(game, line);
 	else if (!(strncmp("Plateau", line, 7)) && game->map == NULL)
 		map_size_and_map(game, line);
-	else if (ft_isdigit(*line)) // && ft_isdigit(*(line + 1)))
+	else if (ft_isdigit(*line))
 		copy_map(game, line, &count);
 	else if (!(strncmp("Piece", line, 5)))
 		get_piece_size(game, line, &count);
