@@ -128,7 +128,6 @@ void	aoe2(t_game *game, int a)
 		}
 		i++;
 	}
-
 }
 
 void	mapvalue(t_game *game)
@@ -174,7 +173,7 @@ t_point	*pickpiece(t_game game)
 
 	gv = -1;
 	tmp = 0;
-	ret = NULL;
+	ret = game.safelist;
 	pickpiece = game.safelist;
 
 	while (pickpiece)
@@ -225,65 +224,3 @@ int main(void)
 		}
 	}
 }
-
-
-
-/*
-//step 2
-//creeate simple map weight, reads map and updates chars to #
-//step 3
-//calculate value at each placement.  if update is post point check, then
-//no need to modify point check
-//step 4
-//place highest value piece
-//fprintf(stderr, "you got here");
-//ft_putstr_fd("loopy\n", 2);
-// is safe?
-// -all places where you can place a piece
-// return top placement
-// -rank placement
-//print_move
-//
-//
-
-fprintf(stderr, "YOU GOT IN THE opponent match\n");
-				fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
-				fprintf(stderr, "spotx: %d, spoty: %d\n", game->spot[0], game->spot[1]);
-
-
-
-fprintf(stderr, "YOU GOT IN THE RETURN\n");
-		fprintf(stderr, "pointx: %d, pointy: %d", point->x, point->y);
-
-
-*/
-
-/*
-void	startposition(t_game *game)
-{
-	game->spot[0] = 0;
-	while (game->map[game->spot[0]])
-	{
-		game->spot[1] = 0;
-		while (game->map[game->spot[0]][game->spot[1]])
-		{
-			if (game->map[game->spot[0]][game->spot[1]] == '.')
-				;
-			else if (game->map[game->spot[0]][game->spot[1]] == \
-					ft_toupper(game->ox))
-			{
-				game->start[0] = game->spot[0];
-				game->start[1] = game->spot[1];
-			}
-			else
-			{
-				game->start[2] = game->spot[0];
-				game->start[3] = game->spot[1];
-			}
-			game->spot[1] += 1;
-		}
-		game->spot[0] += 1;
-	}
-}
-*/
-

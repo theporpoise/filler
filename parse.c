@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 17:07:31 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/17 09:12:57 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/17 10:54:10 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,6 @@ static void	get_piece_size(t_game *game, char *line, int *count)
 	*count = 0;
 	game->p_x = ft_atoi(line + 6);
 	game->p_y = ft_atoi(line + 6 + ft_strlen(ft_itoa(game->p_x)));
-	/*
-	if (game->piece)
-	{
-		while (game->piece[i])
-		{
-			ft_bzero(&(game->piece[i]), ft_strlen(game->piece[i]));
-			ft_strdel(&(game->piece[i]));
-			i++;
-		}
-	}
-	i = 0;
-	*/
 	game->piece = (char **)malloc(sizeof(char *) * (game->p_x + 1));
 	game->piece[game->p_x] = NULL;
 	while (i < game->p_x)
