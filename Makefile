@@ -6,7 +6,7 @@
 #    By: mgould <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/12 11:00:36 by mgould            #+#    #+#              #
-#    Updated: 2017/02/16 16:50:52 by mgould           ###   ########.fr        #
+#    Updated: 2017/02/17 13:22:17 by mgould           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = resources/players/matt_filler
 
 CFLAGS = -Wall -Wextra -Werror -I $(LIBRARY) -I .
 
-OBJCS = main.o debug.o parse.o getsafelist.o structinit.o
+OBJCS = main.o debug.o parse.o getsafelist.o structinit.o aoe.o inbounds.o
 
 LIBFT = /nfs/2016/m/mgould/thelibrary/libft.a
 

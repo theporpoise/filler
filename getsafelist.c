@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:45:55 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/17 11:32:56 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/17 12:23:54 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,27 +51,6 @@ static int	calcover(t_game *game, t_point *point, char **map, char **piece)
 	}
 	return (overlap);
 }
-
-/*
-static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
-{
-	int overlap;
-
-	overlap = 0;
-	game->spot[0] = 0;
-	while (piece[game->spot[0]])
-	{
-		game->spot[1] = 0;
-		while (piece[game->spot[0]][game->spot[1]] && overlap < 2)
-		{
-			overlap += calcover(game, point, map, piece);
-			game->spot[1]++;
-		}
-		game->spot[0]++;
-	}
-	return (overlap);
-}
-*/
 
 static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
 {
@@ -118,32 +97,3 @@ void		getsafelist(t_game *game, t_point **begin)
 		}
 	}
 }
-
-/*
-void		getsafelist(t_game *game, t_point **begin)
-{
-	int		i;
-	int		j;
-	t_point *start;
-	t_point	*next;
-
-	start = pointinit(-1, -1);
-	*begin = start;
-	i = -1;
-	while (++i < game->map_x)
-	{
-		j = -1;
-		while (++j < game->map_y)
-		{
-			next = pointinit(i, j);
-			if (safe_point(game->map, game->piece, next, game) == 1)
-			{
-				start->next = next;
-				start = start->next;
-			}
-			else
-				free(next);
-		}
-	}
-}
-*/
