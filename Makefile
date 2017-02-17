@@ -6,11 +6,11 @@
 #    By: mgould <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/12 11:00:36 by mgould            #+#    #+#              #
-#    Updated: 2017/02/17 13:22:17 by mgould           ###   ########.fr        #
+#    Updated: 2017/02/17 15:00:06 by mgould           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = resources/players/matt_filler
+NAME = filler
 
 CFLAGS = -Wall -Wextra -Werror -I $(LIBRARY) -I .
 
