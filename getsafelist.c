@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:45:55 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/17 09:00:16 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/17 11:32:56 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static int	notinbounds(t_game *game, t_point *point)
 	if (game->map_x <= (point->x + game->spot[0]))
 		return (1);
 	else if (game->map_y <= (point->y + game->spot[1]))
+		return (1);
+	else if (point->x < 0 || point->y < 0)
 		return (1);
 	return (0);
 }
@@ -50,6 +52,7 @@ static int	calcover(t_game *game, t_point *point, char **map, char **piece)
 	return (overlap);
 }
 
+/*
 static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
 {
 	int overlap;
@@ -68,7 +71,55 @@ static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
 	}
 	return (overlap);
 }
+*/
 
+static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
+{
+	int overlap;
+
+	overlap = 0;
+	game->spot[0] = 0;
+	while (game->spot[0] < game->p_x)
+	{
+		game->spot[1] = 0;
+		while (game->spot[1] < game->p_y && overlap < 2)
+		{
+			overlap += calcover(game, point, map, piece);
+			game->spot[1]++;
+		}
+		game->spot[0]++;
+	}
+	return (overlap);
+}
+
+void		getsafelist(t_game *game, t_point **begin)
+{
+	int		i;
+	int		j;
+	t_point *start;
+	t_point	*next;
+
+	start = pointinit(-1, -1);
+	*begin = start;
+	i = (game->p_x * -1) - 1;
+	while (++i < game->map_x)
+	{
+		j = (game->p_y * -1) - 1;
+		while (++j < game->map_y)
+		{
+			next = pointinit(i, j);
+			if (safe_point(game->map, game->piece, next, game) == 1)
+			{
+				start->next = next;
+				start = start->next;
+			}
+			else
+				free(next);
+		}
+	}
+}
+
+/*
 void		getsafelist(t_game *game, t_point **begin)
 {
 	int		i;
@@ -95,3 +146,4 @@ void		getsafelist(t_game *game, t_point **begin)
 		}
 	}
 }
+*/

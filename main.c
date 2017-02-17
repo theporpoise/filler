@@ -198,12 +198,6 @@ void	placement(t_game *game)
 	getsafelist(game, &(game->safelist));
 	mapvalue(game);
 	placement = pickpiece(*game);
-	//fprintf(stderr, "Piece Pacement, %d, %d", placement->x, placement->y);
-	//sleep(1);
-	//ft_putnbr(placement->x);
-	//ft_putchar(' ');
-	//ft_putnbr(placement->y);
-	//ft_putchar('\n');
 	ft_printf("%d %d\n", placement->x, placement->y);
 
 }
@@ -219,8 +213,6 @@ int main(void)
 		if (parse(&game, line))
 		{
 			placement(&game);
-			//debug_game(&game);
-			//create a list delete function and map free function function
 		}
 	}
 }
