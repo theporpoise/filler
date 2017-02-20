@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 17:07:31 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/17 15:03:07 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/20 15:27:57 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ int			parse(t_game *game, char *line)
 {
 	static int	count;
 
-	if (!(strncmp("$$$", line, 3)) && ft_strstr(line, "../filler"))
+	if (!(ft_strncmp("$$$", line, 3)) && ft_strstr(line, "../filler"))
 		get_player_and_piece(game, line);
-	else if (!(strncmp("Plateau", line, 7)) && game->map == NULL)
+	else if (!(ft_strncmp("Plateau", line, 7)) && game->map == NULL)
 		map_size_and_map(game, line);
 	else if (ft_isdigit(*line))
 		copy_map(game, line, &count);
-	else if (!(strncmp("Piece", line, 5)))
+	else if (!(ft_strncmp("Piece", line, 5)))
 		get_piece_size(game, line, &count);
 	else if ((*line == '*' || *line == '.'))
 	{
