@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:45:55 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/17 12:23:54 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/18 17:14:32 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	notinbounds(t_game *game, t_point *point)
 		return (1);
 	else if (game->map_y <= (point->y + game->spot[1]))
 		return (1);
-	else if (point->x < 0 || point->y < 0)
+	else if ((point->x + game->spot[0]) < 0 || (point->y + game->spot[1]) < 0)
 		return (1);
 	return (0);
 }
@@ -71,29 +71,37 @@ static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
 	return (overlap);
 }
 
-void		getsafelist(t_game *game, t_point **begin)
+void		getsafelist(t_game *game) //, t_point **begin)
 {
 	int		i;
 	int		j;
 	t_point *start;
-	t_point	*next;
+	//t_point	*next;
 
-	start = pointinit(-1, -1);
-	*begin = start;
+	game->safelist = pointinit(-1, -1);
+	start = game->safelist;
 	i = (game->p_x * -1) - 1;
-	while (++i < game->map_x)
+	while (++i < (game->map_x + game->p_x))
 	{
 		j = (game->p_y * -1) - 1;
-		while (++j < game->map_y)
+		while (++j < (game->map_y + game->p_y))
 		{
+			if (safe_point(game->map, game->piece, pointinit(i, j), game) == 1)
+			{
+				start->next = pointinit(i, j);
+				start = start->next;
+			}
+			/*
 			next = pointinit(i, j);
 			if (safe_point(game->map, game->piece, next, game) == 1)
 			{
 				start->next = next;
 				start = start->next;
+				next = next->next;
 			}
 			else
 				free(next);
+			*/
 		}
 	}
 }
