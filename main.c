@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/17 14:32:02 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/20 11:43:07 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/20 15:06:00 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <filler.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>
 
 void	mapvalue(t_game *game)
 {
@@ -73,14 +72,9 @@ t_point	*pickpiece(t_game *game)
 	return (ret);
 }
 
-/*
-** debug_game(game);
-*/
-
 void	placement(t_game *game)
 {
 	t_point *placement;
-
 
 	placement = NULL;
 	getsafelist(game);
@@ -93,7 +87,8 @@ void	placement(t_game *game)
 }
 
 /*
-** usleep (100000);
+** to slow down output for corrections use usleep (100000);
+** use print_heatmap(game->map); below placement for corrections
 */
 
 int		main(void)

@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/09 16:36:16 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/18 16:08:13 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/20 14:37:08 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,16 @@ typedef struct		s_game
 }					t_game;
 
 int					parse(t_game *game, char *line);
-void				getsafelist(t_game *game); //, t_point **begin);
+void				getsafelist(t_game *game);
 void				game_init(t_game *game);
 t_point				*pointinit(int x, int y);
 void				aoe1(t_game *game, int a);
 void				aoe2(t_game *game, int a);
 int					inbounds(t_game *game, int i, int j);
+void				print_heatmap(char **map);
 /*
 ** Debug Functions
+** void				debug_game(t_game *game);
 */
 void				debug_game(t_game *game);
 #endif

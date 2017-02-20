@@ -6,7 +6,7 @@
 /*   By: mgould <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:45:55 by mgould            #+#    #+#             */
-/*   Updated: 2017/02/18 17:14:32 by mgould           ###   ########.fr       */
+/*   Updated: 2017/02/20 11:52:41 by mgould           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,11 @@ static int	safe_point(char **map, char **piece, t_point *point, t_game *game)
 	return (overlap);
 }
 
-void		getsafelist(t_game *game) //, t_point **begin)
+void		getsafelist(t_game *game)
 {
 	int		i;
 	int		j;
 	t_point *start;
-	//t_point	*next;
 
 	game->safelist = pointinit(-1, -1);
 	start = game->safelist;
@@ -91,17 +90,6 @@ void		getsafelist(t_game *game) //, t_point **begin)
 				start->next = pointinit(i, j);
 				start = start->next;
 			}
-			/*
-			next = pointinit(i, j);
-			if (safe_point(game->map, game->piece, next, game) == 1)
-			{
-				start->next = next;
-				start = start->next;
-				next = next->next;
-			}
-			else
-				free(next);
-			*/
 		}
 	}
 }
